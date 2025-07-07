@@ -1,0 +1,6 @@
+path: parking_spot_dataset
+train: images/train
+val: images/val
+
+names:
+  0: parking_spot

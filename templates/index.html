@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Meta tags for proper rendering and responsiveness -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parking Space Detection</title>
+
+    <!-- Bootstrap CSS for responsive layout and components -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- jQuery for AJAX calls to update counts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Inline custom styles -->
+    <style>
+        body {
+            background: linear-gradient(135deg, #e0f7fa, #ffffff);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .header-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #004d40;
+        }
+
+        .card {
+            border: none;
+            border-radius: 1rem;
+            transition: transform 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px); /* Subtle hover animation */
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .display-4 {
+            font-size: 2.5rem; /* Number display size */
+        }
+
+        .stats-icon {
+            font-size: 2.5rem;
+        }
+
+        .img-fluid {
+            border-radius: 0 0 1rem 1rem; /* Rounded bottom corners for video */
+        }
+
+        .footer {
+            margin-top: 60px;
+            padding: 20px;
+            background-color: #263238;
+            color: #fff;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container text-center mt-5">
+        <!-- Page Header -->
+        <h1 class="mb-4 header-title">Smart Parking Monitor 🚗</h1>
+
+        <!-- Statistic Cards Row -->
+        <div class="row g-4">
+            <!-- Free Spaces Card -->
+            <div class="col-md-4">
+                <div class="card bg-light text-success">
+                    <div class="card-body d-flex align-items-center justify-content-center">
+                        <div class="stats-icon me-3">
+                            <i class="bi bi-check-circle-fill"></i>
+                        </div>
+                        <div>
+                            <h4 class="card-title">Free Spaces</h4>
+                            <p id="free-spaces" class="display-4">0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wrong Parking Card -->
+            <div class="col-md-4">
+                <div class="card bg-light text-warning">
+                    <div class="card-body d-flex align-items-center justify-content-center">
+                        <div class="stats-icon me-3">
+                            <i class="bi bi-exclamation-circle-fill"></i>
+                        </div>
+                        <div>
+                            <h4 class="card-title">Wrong Parking</h4>
+                            <p id="wrong-parking-spaces" class="display-4">0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Occupied Spaces Card -->
+            <div class="col-md-4">
+                <div class="card bg-light text-danger">
+                    <div class="card-body d-flex align-items-center justify-content-center">
+                        <div class="stats-icon me-3">
+                            <i class="bi bi-x-circle-fill"></i>
+                        </div>
+                        <div>
+                            <h4 class="card-title">Occupied Spaces</h4>
+                            <p id="occupied-spaces" class="display-4">0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Video Feed Display -->
+        <div class="mt-5">
+            <div class="card shadow-sm">
+                <div class="card-body p-0">
+                    <!-- Video stream coming from Flask server -->
+                    <img src="{{ url_for('video_feed') }}" class="img-fluid mx-auto d-block" style="max-height: 500px; max-width: 100%; height: auto;">
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer mt-5">
+            <p>© 2024 Smart Parking Detection - Developed with AI Vision</p>
+        </div>
+    </div>
+
+    <!-- JavaScript to Poll Space Count from Flask API -->
+    <script>
+        // Function to retrieve space status counts from the server
+        function updateSpaceCount() {
+            $.getJSON('/space_count', function (data) {
+                // Update card values dynamically
+                $('#free-spaces').text(data.free);
+                $('#wrong-parking-spaces').text(data.wrong);
+                $('#occupied-spaces').text(data.occupied);
+            });
+        }
+
+        // Call the function once DOM is ready, then poll every 2 seconds
+        $(document).ready(function () {
+            updateSpaceCount(); // Initial call
+            setInterval(updateSpaceCount, 2000); // Auto-refresh every 2s
+        });
+    </script>
+
+    <!-- Bootstrap Icons CDN for icon rendering -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css">
+</body>
+
+</html>
