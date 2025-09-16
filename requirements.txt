@@ -1,0 +1,10 @@
+flask
+requests
+opencv-python
+pickle-mixin
+numpy
+keras
+tensorflow
+ultralytics
+matplotlib
+torch
